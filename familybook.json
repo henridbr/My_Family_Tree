@@ -1,0 +1,27 @@
+{
+    "family_dictionary" :{
+        "members": [
+			{
+			"first_name":"Christophe","rank":"son","age":"46","father":"Henri","location":"La Rochelle"
+			},
+			{
+			"first_name":"Vincent","rank":"son","age":"45","father":"Henri","location":"Thionville"
+			},
+			{
+			"first_name":"Elodie","rank":"daughter","age":"40","father":"Henri","location":"Fontenay le Comte"
+			},
+			{
+			"first_name":"Anatole","rank":"grand_son","age":"13","father":"Vincent","location":"Thionville"
+			},
+			{
+			"first_name":"Stephane","rank":"grand_son","age":"10","father":"Christophe","location":"La Rochelle"
+			},
+			{
+			"first_name":"Manon","rank":"grand_daughter","age":"13","father":"Christophe","location":"La Rochelle"
+			},
+			{
+			"first_name":"Juliette","rank":"grand_daughter","age":"11","father":"Vincent","location":"Thionville"
+			}
+		]
+    }
+}
