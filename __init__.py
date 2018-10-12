@@ -23,7 +23,7 @@ from adapt.intent import IntentBuilder
 from mycroft.skills.core import MycroftSkill
 from mycroft.util.log import getLogger
 from mycroft import intent_handler
-
+from os.path import dirname
 
 import requests
 import json
@@ -47,11 +47,13 @@ class FamilyLearningSkill(MycroftSkill):
     @intent_handler(IntentBuilder("SonIntent").require("SonKeyword"))
     def handle_son_intent(self, message):
 
-        with open("./opt/mycroft/skills/skill_family_learning.henridbr/familybook.json", "r") as read_file:
+#        with open("./opt/mycroft/skills/skill_family_learning.henridbr/familybook.json", "r") as read_file:
+        with open(self._dir, 'familybook.json', "r") as read_file:
             family = json.load(read_file)
 
         membersname = family['family_dictionary']['members']
-        
+        rank_member = message.data.get('SonKeyword')
+        print(rank_member)
         namelist = []
         namegroup = ""
         
