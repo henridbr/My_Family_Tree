@@ -23,7 +23,7 @@ from adapt.intent import IntentBuilder
 from mycroft.skills.core import MycroftSkill
 from mycroft.util.log import getLogger
 from mycroft import intent_handler
-from os.path import dirname
+from os.path import dirname, exists, join
 
 import requests
 import json
@@ -42,139 +42,47 @@ class FamilyLearningSkill(MycroftSkill):
     def handle_family_learning_intent(self, message):
         self.speak_dialog("save.it.memory")
 
-        
-##### Son
-    @intent_handler(IntentBuilder("SonIntent").require("SonKeyword"))
-    def handle_son_intent(self, message):
+### Find who is my ?        
+    @intent_handler(IntentBuilder("FamilyMemberIntent").require("FamilyMemberKeyword"))
+    def handle_family_member_intent(self, message):
 
-#        with open("./opt/mycroft/skills/skill_family_learning.henridbr/familybook.json", "r") as read_file:
-        with open(self._dir, 'familybook.json', "r") as read_file:
+        family_rank = message.data.get("FamilyMemberKeyword")
+#       print(family_rank)
+        
+        with open(join(self._dir, 'familybook.json'), "r") as read_file:
             family = json.load(read_file)
 
         membersname = family['family_dictionary']['members']
-        rank_member = message.data.get('SonKeyword')
-        print(rank_member)
+        
         namelist = []
         namegroup = ""
-        
+          
         i=0
         while i< len(membersname):
-            if (membersname[i]['rank'] == "son"):
+            if (membersname[i]['rank'] == family_rank):
                 namelist.append(membersname[i]['first_name'])
             i = i+1
         i=1
         if len(namelist) ==0 :
-            self.speak_dialog('you have no son')
+            self.speak_dialog('you have no {}'.format(family_rank))
         elif len(namelist) ==1 :
-            self.speak_dialog(namelist[0] + " is your son")            
+            self.speak_dialog('{} is your {}'.format(namelist[0],family_rank))            
         else:
             namegroup = namelist[0]
             while i< len(namelist):
                 namegroup = namegroup +" and " + namelist[i]
                 i = i+1
-            self.speak_dialog('{} are your sons'.format(namegroup))
-     
+            self.speak_dialog('{} are your {}'.format(namegroup,family_rank))
+             
         
-##### Daughter
-    @intent_handler(IntentBuilder("DaughterIntent").require("DaughterKeyword"))
-    def handle_daughter_intent(self, message):
-           
-        with open("./opt/mycroft/skills/skill_family_learning.henridbr/familybook.json", "r") as read_file:
-            family = json.load(read_file)
 
-        membersname = family['family_dictionary']['members']
-
-        namelist = []
-        namegroup = ""
-        
-        i=0
-        while i< len(membersname):
-            if (membersname[i]['rank'] == "daughter"):
-                namelist.append(membersname[i]['first_name'])
-            i = i +1
-        i=1
-        if len(namelist) ==0 :
-            self.speak_dialog('you have no daughter')
-        elif len(namelist) ==1 :
-            self.speak_dialog(namelist[0] + " is your daughter")            
-        else:
-            namegroup = namelist[0]
-            while i< len(namelist):
-                namegroup = namegroup +" and " + namelist[i]
-                i = i+1
-            self.speak_dialog('{} are your daughters'.format(namegroup))
-
-        
-        
-##### Grand Son
-    @intent_handler(IntentBuilder("GrandSonIntent").require("GrandSonKeyword"))
-    def handle_grand_son_intent(self, message):
-
-        with open("./opt/mycroft/skills/skill_family_learning.henridbr/familybook.json", "r") as read_file:
-            family = json.load(read_file)
-
-        membersname = family['family_dictionary']['members']
-
-        namelist = []
-        namegroup = ""
-        
-        i=0
-        while i< len(membersname):
-            if (membersname[i]['rank'] == "grand_son"):
-                namelist.append(membersname[i]['first_name'])
-            i = i +1
-        i=1
-        if len(namelist) ==0 :
-            self.speak_dialog('you have no grand son')
-        elif len(namelist) ==1 :
-            self.speak_dialog(namelist[0] + " is your grand son")            
-        else:
-            namegroup = namelist[0]
-            while i< len(namelist):
-                namegroup = namegroup +" and " + namelist[i]
-                i = i+1
-            self.speak_dialog('{} are your grand sons'.format(namegroup))
-
-        
-##### Grand Daughter
-    @intent_handler(IntentBuilder("GrandDaughterIntent").require("GrandDaughterKeyword"))
-    def handle_grand_daughter_intent(self, message):
-
-        with open("./opt/mycroft/skills/skill_family_learning.henridbr/familybook.json", "r") as read_file:
-            family = json.load(read_file)
-
-        membersname = family['family_dictionary']['members']
-
-        namelist = []
-        namegroup = ""
-        
-        i=0
-        while i< len(membersname):
-            if (membersname[i]['rank'] == "grand_daughter"):
-                namelist.append(membersname[i]['first_name'])
-            i = i +1
-        i=1
-        if len(namelist) ==0 :
-            self.speak_dialog('you have no grand daughter')
-        elif len(namelist) ==1 :
-            self.speak_dialog(namelist[0] + " is your grand daughter")            
-        else:
-            namegroup = namelist[0]
-            while i< len(namelist):
-                namegroup = namegroup +" and " + namelist[i]
-                i = i+1
-            self.speak_dialog('{} are your grand daughters'.format(namegroup))
-
-            
-#### Living Place
+#### Find Living Place of someone
     @intent_handler(IntentBuilder("LivingPlaceIntent").require("LivingPlaceKeyword").require("FamilyFirstName"))
     def handle_living_place(self, message):
   
         member = message.data.get('FamilyFirstName')
-        print(member)
-        member = member.capitalize()
                
-        with open("./opt/mycroft/skills/skill_family_learning.henridbr/familybook.json", "r") as read_file:
+        with open(join(self._dir, 'familybook.json'), "r") as read_file:
             family = json.load(read_file)
 
         membersname = family['family_dictionary']['members']
@@ -182,17 +90,104 @@ class FamilyLearningSkill(MycroftSkill):
         memberslivingplace ={}
 
         i=0
+        foundit = ""
         while i< len(membersname):
-            who = membersname[i]['first_name']
-            where = membersname[i]['location']
-            memberslivingplace[who] = where
-            i = i +1
+            if (member.find(membersname[i]['first_name'].lower())>=0):
+                member = membersname[i]['first_name']
+                foundit = "found"
+            i=i+1
+            
+        if (foundit==""):
+            self.speak('Sorry, I missed something')
+        else:
+            print(member)
+            i=0
+            while i< len(membersname):
+                who = membersname[i]['first_name']
+                where = membersname[i]['location']
+                memberslivingplace[who] = where
+                i=i+1
 
-        livingplace = memberslivingplace[member]
+            livingplace = memberslivingplace[member]
  
-        self.speak('{} is from {}'.format(member, livingplace))
-            
-            
+            self.speak('{} is from {}'.format(member, livingplace))
+      
+       
+#### Find Age of someone
+    @intent_handler(IntentBuilder("SomeOneAgeIntent").require("SomeOneAgeKeyword").require("FamilyFirstName"))
+    def handle_someone_age(self, message):
+  
+        member = message.data.get('FamilyFirstName')
+               
+        with open(join(self._dir, 'familybook.json'), "r") as read_file:
+            family = json.load(read_file)
+
+        membersname = family['family_dictionary']['members']
+
+        membersage ={}
+        foundit = ""
+
+        i=0
+        while i< len(membersname):
+            if (member.find(membersname[i]['first_name'].lower())>=0):
+                member = membersname[i]['first_name']
+                foundit = "found"
+            i=i+1
+        if (foundit==""):
+            self.speak('Sorry, I missed something')
+        else:
+            print(member)
+            i=0
+            while i< len(membersname):
+                who = membersname[i]['first_name']
+                so_age = membersname[i]['age']
+                membersage[who] = so_age
+                i=i+1
+
+            member_age = membersage[member]
+            if (member_age == "dead"):
+                self.speak('{} is {}'.format(member, member_age))
+            else:
+                self.speak('{} is {} old'.format(member, member_age))
+  
+
+#### Find feature of someone
+    @intent_handler(IntentBuilder("SomeOneFeatureIntent").require("SomeOneFeatureKeyword").require("FamilyFirstName"))
+    def handle_someone_feature(self, message):
+  
+        member = message.data.get('FamilyFirstName')
+               
+        with open(join(self._dir, 'familybook.json'), "r") as read_file:
+            family = json.load(read_file)
+
+        membersname = family['family_dictionary']['members']
+
+        membersfeature ={}
+        foundit = ""
+
+        i=0
+        while i< len(membersname):
+            if (member.find(membersname[i]['first_name'].lower())>=0):
+                member = membersname[i]['first_name']
+                foundit = "found"
+            i=i+1
+        if (foundit==""):
+            self.speak('Sorry, I missed something')
+        else:
+            print(member)
+            i=0
+            while i< len(membersname):
+                who = membersname[i]['first_name']
+                so_feature = membersname[i]['feature']
+                membersfeature[who] = so_feature
+                i=i+1
+
+            member_feature = membersfeature[member]
+            if (member_feature == ""):
+                self.speak('Sorry, I don\'t  know more on {}'.format(member))
+            else:
+                self.speak('{} is really {}'.format(member, member_feature))
+                   
     
     def stop(self):
         pass
