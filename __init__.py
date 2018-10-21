@@ -40,7 +40,7 @@ class MyFamilyTreeSkill(MycroftSkill):
         
     @intent_handler(IntentBuilder("MyFamilyTreeIntent").require("MyFamilyTreeKeyword"))
     def handle_family_learning_intent(self, message):
-        self.speak_dialog("save.it.memory")
+        self.speak_dialog("got.it.memory")
 
 ### Find who is my ?        
     @intent_handler(IntentBuilder("FamilyMemberIntent").require("FamilyMemberKeyword"))
