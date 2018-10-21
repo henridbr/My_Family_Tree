@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Mycroft Core.  If not, see <http://www.gnu.org/licenses/>.
 
-# Mycroft_family_learning
+# Mycroft_my_family_tree
 
 # Mycroft libraries
 
@@ -33,12 +33,12 @@ __author__ = 'henridbr' # hd@uip
 LOGGER = getLogger(__name__)
 
 
-class FamilyLearningSkill(MycroftSkill):
+class MyFamilyTreeSkill(MycroftSkill):
 
     def __init__(self):
-        super(FamilyLearningSkill, self).__init__(name="FamilyLearningSkill")
+        super(MyFamilyTreeSkill, self).__init__(name="MyFamilyTreeSkill")
         
-    @intent_handler(IntentBuilder("FamilyLearningIntent").require("FamilyLearningKeyword"))
+    @intent_handler(IntentBuilder("MyFamilyTreeIntent").require("MyFamilyTreeKeyword"))
     def handle_family_learning_intent(self, message):
         self.speak_dialog("save.it.memory")
 
@@ -193,4 +193,4 @@ class FamilyLearningSkill(MycroftSkill):
         pass
 
 def create_skill():
-    return FamilyLearningSkill()
+    return MyFamilyTreeSkill()
