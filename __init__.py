@@ -49,8 +49,9 @@ class MyFamilyTreeSkill(MycroftSkill):
 
         family_rank = message.data.get("FamilyMemberKeyword")
 #       print(family_rank)
-        
-        with open(join(self._dir, 'familybook.json'), "r") as read_file:
+# self.-dir
+
+        with open(join(os.path.dirname(__file__), 'familybook.json'), "r") as read_file:
             family = json.load(read_file)
 
         membersname = family['family_dictionary']['members']
@@ -83,7 +84,7 @@ class MyFamilyTreeSkill(MycroftSkill):
   
         member = message.data.get('FamilyFirstName')
                
-        with open(join(self._dir, 'familybook.json'), "r") as read_file:
+        with open(join(os.path.dirname(__file__), 'familybook.json'), "r") as read_file:
             family = json.load(read_file)
 
         membersname = family['family_dictionary']['members']
@@ -120,7 +121,7 @@ class MyFamilyTreeSkill(MycroftSkill):
   
         member = message.data.get('FamilyFirstName')
                
-        with open(join(self._dir, 'familybook.json'), "r") as read_file:
+        with open(join(os.path.dirname(__file__), 'familybook.json'), "r") as read_file:
             family = json.load(read_file)
 
         membersname = family['family_dictionary']['members']
@@ -158,7 +159,7 @@ class MyFamilyTreeSkill(MycroftSkill):
   
         member = message.data.get('FamilyFirstName')
                
-        with open(join(self._dir, 'familybook.json'), "r") as read_file:
+        with open(join(os.path.dirname(__file__), 'familybook.json'), "r") as read_file:
             family = json.load(read_file)
 
         membersname = family['family_dictionary']['members']
