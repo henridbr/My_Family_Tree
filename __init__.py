@@ -26,6 +26,7 @@ from mycroft import intent_handler
 from os.path import dirname, exists, join
 
 import requests
+import os
 import json
 
 __author__ = 'henridbr' # hd@uip
