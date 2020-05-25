@@ -49,7 +49,6 @@ class MyFamilyTreeSkill(MycroftSkill):
 
         family_rank = message.data.get("FamilyMemberKeyword")
 #       print(family_rank)
-# self.-dir
 
         with open(join(os.path.dirname(__file__), 'familybook.json'), "r") as read_file:
             family = json.load(read_file)
